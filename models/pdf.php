@@ -5,40 +5,59 @@ include "./users.php";
 
 $data = data();
 
-
 use Dompdf\Dompdf;
-// use Dompdf\Options;
-
 
 if (isset($data)) {
-   
-    
     $html = '
-        <h1 align="center">Liste Of Customers</h1>
-        <table style="width:100%; border-collapse:collapse;">
-            <tr>
-                <th>ID</th>
-                <th>F_NAME</th>
-                <th>L_NAME</th>
-                <th>JOB</th>
-            </tr>
+        <style>
+            /* Include Bootstrap CSS */
+            ' . file_get_contents('../styles/css/bootstrap.min.css') . '
+            /* Additional styles for the PDF */
+            body {
+                font-family: "Helvetica", sans-serif;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+                
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        <h1 class="text-center">Liste Of Customers</h1>
+        <table class="table ">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>F_NAME</th>
+                    <th>L_NAME</th>
+                    <th>JOB</th>
+                </tr>
+            </thead>
+            <tbody>
     ';
 
-   
+    foreach ($data as $d) {
+        $html .= "
+            <tr>
+                <td>{$d->idp}</td>
+                <td>{$d->nom}</td>
+                <td>{$d->prenom}</td>
+                <td>{$d->about}</td>
+            </tr>
+        ";
+    }
 
-        foreach ($data as $d) {
-            $html .= "
-                <tr>
-                    <td style='border:1px solid #ddd; padding:8px; text-align:center;'>{$d->idp}</td>
-                    <td style='border:1px solid #ddd; padding:8px; text-align:center;'>{$d->nom}</td>
-                    <td style='border:1px solid #ddd; padding:8px; text-align:center;'>{$d->prenom}</td>
-                    <td style='border:1px solid #ddd; padding:8px; text-align:center;'>{$d->about}</td>
-                </tr>
-            ";
-        }
-    
-
-    $html .= '</table>';
+    $html .= '
+            </tbody>
+        </table>';
 
     $dompdf = new Dompdf();
     $dompdf->loadHtml($html);
